@@ -3,10 +3,8 @@ const CORE_ASSETS = [
   './',
   './index.html',
   './manifest.webmanifest',
-  // icons
   './icons/icon-192.png',
   './icons/icon-512.png',
-  // add other local assets if you split CSS/JS
 ];
 
 self.addEventListener('install', (event) => {
@@ -29,7 +27,6 @@ self.addEventListener('fetch', (event) => {
   const req = event.request;
   event.respondWith(
     fetch(req).then(resp => {
-      // update cache in background
       const copy = resp.clone();
       caches.open(CACHE_NAME).then(cache => cache.put(req, copy));
       return resp;
