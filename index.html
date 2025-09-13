@@ -5,22 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Headache Diary</title>
     
-    <!-- PWA Meta Tags -->
+    <!-- PWA Meta -->
+    <meta name="theme-color" content="#4facfe">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="Headache Diary">
     <meta name="mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#4facfe">
-    
-    <!-- App Icons (root folder) -->
+
+    <!-- Icons in root folder -->
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
     <link rel="icon" sizes="192x192" href="icon-192.png">
     <link rel="icon" sizes="512x512" href="icon-512.png">
-    
+
     <!-- Manifest -->
     <link rel="manifest" href="manifest.webmanifest">
 
-    <!-- === ALL YOUR ORIGINAL CSS STARTS HERE (unchanged) === -->
+    <!-- === Original CSS from your file === -->
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -72,21 +72,20 @@
             margin-bottom: 10px;
             font-size: 0.95em;
         }
-        .install-prompt {
-            background: rgba(255,255,255,0.95);
-            border: 1px solid #ccc;
-            padding: 10px;
-            border-radius: 8px;
-            margin: 15px;
-            font-size: 14px;
-            display: none;
-        }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px);}
             to { opacity: 1; transform: translateY(0);}
         }
+        textarea {
+            width: 100%;
+            min-height: 80px;
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 1em;
+        }
     </style>
-    <!-- === END ORIGINAL CSS === -->
 </head>
 <body>
     <div class="container">
@@ -99,15 +98,11 @@
             <textarea id="note" placeholder="Describe your headache..."></textarea>
             <button onclick="saveEntry()">Save Entry</button>
             <button onclick="clearEntries()">Clear All</button>
-            <div id="installPrompt" class="install-prompt">
-                Tap "Share" then "Add to Home Screen" to install this app
-            </div>
-            <button id="btnInstall" style="display:none;">➕ Install App</button>
         </div>
     </div>
 
+    <!-- === Original JavaScript from your file === -->
     <script>
-        // === YOUR ORIGINAL JS STARTS HERE ===
         const entriesDiv = document.getElementById('entries');
         const noteInput = document.getElementById('note');
 
@@ -139,38 +134,12 @@
 
         loadEntries();
 
-        // === PWA Setup (Android + iOS) ===
-        let deferredPrompt;
+        // === PWA Setup (only service worker registration added) ===
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('./sw.js')
-              .then(() => console.log('Service worker registered'))
+              .then(() => console.log('Service Worker registered'))
               .catch(err => console.log('SW registration failed', err));
         }
-
-        // Android install prompt
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            const btn = document.getElementById('btnInstall');
-            btn.style.display = 'block';
-            btn.onclick = async () => {
-                deferredPrompt.prompt();
-                await deferredPrompt.userChoice;
-                deferredPrompt = null;
-                btn.style.display = 'none';
-            };
-        });
-
-        // iOS install hint
-        function showIOSInstallHintIfNeeded() {
-            const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
-            const isInStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
-            if (isIOS && !isInStandalone) {
-                document.getElementById('installPrompt').style.display = 'block';
-            }
-        }
-        document.addEventListener('DOMContentLoaded', showIOSInstallHintIfNeeded);
-        // === END ORIGINAL JS ===
     </script>
 </body>
 </html>
