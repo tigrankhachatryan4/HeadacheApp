@@ -4,7 +4,7 @@ const CORE_ASSETS = [
   './index.html',
   './manifest.webmanifest',
   './icons/icon-192.png',
-  './icons/icon-512.png'
+  './icons/icon-512.png',
 ];
 
 self.addEventListener('install', (event) => {
@@ -24,11 +24,12 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
+  const req = event.request;
   event.respondWith(
-    fetch(event.request).then(resp => {
+    fetch(req).then(resp => {
       const copy = resp.clone();
-      caches.open(CACHE_NAME).then(cache => cache.put(event.request, copy));
+      caches.open(CACHE_NAME).then(cache => cache.put(req, copy));
       return resp;
-    }).catch(() => caches.match(event.request))
+    }).catch(() => caches.match(req))
   );
 });
