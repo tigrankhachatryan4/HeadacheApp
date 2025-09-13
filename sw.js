@@ -3,9 +3,10 @@ const CORE_ASSETS = [
   './',
   './index.html',
   './manifest.webmanifest',
-  './icon-192.png',
-  './icon-512.png',
-  './apple-touch-icon.png'
+  // icons
+  './icons/icon-192.png',
+  './icons/icon-512.png',
+  // add other local assets if you split CSS/JS
 ];
 
 self.addEventListener('install', (event) => {
@@ -25,11 +26,13 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
+  const req = event.request;
   event.respondWith(
-    fetch(event.request).then(resp => {
+    fetch(req).then(resp => {
+      // update cache in background
       const copy = resp.clone();
-      caches.open(CACHE_NAME).then(cache => cache.put(event.request, copy));
+      caches.open(CACHE_NAME).then(cache => cache.put(req, copy));
       return resp;
-    }).catch(() => caches.match(event.request))
+    }).catch(() => caches.match(req))
   );
 });
